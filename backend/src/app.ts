@@ -1,0 +1,68 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import { env } from './config/env.js';
+import { connectDB } from './config/database.js';
+import { apiLimiter, errorHandler } from './middleware/index.js';
+import routes from './routes/index.js';
+
+const app = express();
+
+// Security middleware
+app.use(helmet());
+app.use(cors({
+    origin: env.FRONTEND_URL,
+    credentials: true,
+}));
+
+// Request parsing
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// Logging
+if (env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+} else {
+    app.use(morgan('combined'));
+}
+
+// Rate limiting
+app.use('/api', apiLimiter);
+
+// API routes
+app.use('/api', routes);
+
+// Error handler
+app.use(errorHandler);
+
+// Start server
+const startServer = async () => {
+    try {
+        // Connect to MongoDB
+        await connectDB();
+
+        const PORT = parseInt(env.PORT);
+        app.listen(PORT, () => {
+            console.log(`
+╔═══════════════════════════════════════════════╗
+║                                               ║
+║   🎮 CodeQuest RPG API Server                 ║
+║                                               ║
+║   Environment: ${env.NODE_ENV.padEnd(28)}║
+║   Port: ${PORT.toString().padEnd(36)}║
+║   Frontend: ${env.FRONTEND_URL.padEnd(32)}║
+║                                               ║
+╚═══════════════════════════════════════════════╝
+      `);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+};
+
+// Export startServer for external use (e.g. server.ts)
+export { startServer };
+
+export default app;
