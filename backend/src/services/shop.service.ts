@@ -79,7 +79,7 @@ export class ShopService {
         // Unequip other items of same type
         const itemsOfType = await Inventory.find({ characterId }).populate('itemId');
         for (const invItem of itemsOfType) {
-            if ((invItem.itemId as IItem).type === item.type && invItem.isEquipped) {
+            if ((invItem.itemId as unknown as IItem).type === item.type && invItem.isEquipped) {
                 invItem.isEquipped = false;
                 await invItem.save();
             }

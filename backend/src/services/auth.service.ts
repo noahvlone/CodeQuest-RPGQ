@@ -37,7 +37,7 @@ export class AuthService {
 
         return jwt.sign(payload, env.JWT_SECRET, {
             expiresIn: env.JWT_EXPIRES_IN,
-        });
+        } as jwt.SignOptions);
     }
 
     verifyToken(token: string): TokenPayload {
@@ -211,7 +211,7 @@ export class AuthService {
             }
         );
 
-        const { access_token, id_token } = tokenResponse.data;
+        const { access_token } = tokenResponse.data;
 
         // Get user info from Google
         const userResponse = await axios.get<GoogleUser>(

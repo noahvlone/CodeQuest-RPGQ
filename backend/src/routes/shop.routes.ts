@@ -6,7 +6,7 @@ import { authMiddleware, AuthRequest } from '../middleware/auth.middleware.js';
 const router = Router();
 
 // Get all items
-router.get('/items', async (req, res) => {
+router.get('/items', async (_req, res) => {
     try {
         const items = await shopService.getAllItems();
         res.json({ items });

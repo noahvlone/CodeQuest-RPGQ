@@ -11,7 +11,7 @@ import { executionLimiter } from '../middleware/rateLimit.middleware.js';
 const router = Router();
 
 // Get all challenges (grouped by category)
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
     try {
         const challenges = await Challenge.find({ isActive: true })
             .select('-solutionCode -testCases')

@@ -47,7 +47,7 @@ router.post('/login', authLimiter, validate(loginSchema), async (req, res) => {
 });
 
 // GitHub OAuth - initiate
-router.get('/github', (req, res) => {
+router.get('/github', (_req, res) => {
     const clientId = env.GITHUB_CLIENT_ID;
     const redirectUri = env.GITHUB_CALLBACK_URL;
     const scope = 'read:user user:email';
@@ -78,7 +78,7 @@ router.get('/github/callback', async (req, res) => {
 });
 
 // Google OAuth - initiate
-router.get('/google', (req, res) => {
+router.get('/google', (_req, res) => {
     const clientId = env.GOOGLE_CLIENT_ID;
     const redirectUri = env.GOOGLE_CALLBACK_URL;
     const scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email';
@@ -114,7 +114,7 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
 });
 
 // Logout (client-side token removal)
-router.post('/logout', (req, res) => {
+router.post('/logout', (_req, res) => {
     res.json({ message: 'Logged out successfully' });
 });
 
